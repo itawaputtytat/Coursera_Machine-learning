@@ -1,57 +1,64 @@
+# Machine Learning Online Class - Exercise 1: Linear Regression
 
-# Preparatory settings ----------------------------------------------------
+# Instructions ------------------------------------------------------------
 
-wdReset()
+#  This file contains code that helps you get started on the
+#  linear exercise. You will need to complete the following functions 
+#  in this exericse:
+#
+#     warmUpExercise.m
+#     plotData.m
+#     gradientDescent.m
+#     computeCost.m
+#     gradientDescentMulti.m
+#     computeCostMulti.m
+#     featureNormalize.m
+#     normalEqn.m
+#
+#  For this exercise, you will not need to change any code in this file,
+#  or any other files other than those mentioned above.
+#
+# x refers to the population size in 10,000s
+# y refers to the profit in $10,000s
 
 
-## Set new working directory
-dir_ex  <- "01_Linear regression"
-setwd(file.path(getwd(), dir_ex))
 
+# Resources ---------------------------------------------------------------
 
-## Call functions
+dir <- "01_Linear-regression"
+library(puttytat4R)
 source("plotData.R")
 source("computeCost.R")
 source("gradientDescent.R")
 
-## Call function with vectorized implentations
-#source("gradientDescent_vectorized.R")
-#source("computeCost_vectorized.R")
 
 
-graphics.off()
+# Part 1: Basic function --------------------------------------------------
 
-cat("\n\n")
+# Complete warmUpExercise.m 
 
+cat("Running warmUpExercise ... \n")
+cat("5x5 Identity Matrix: \n")
 
+warmUpExercise()
 
-# Data preparation --------------------------------------------------------
-
-cat("Data preparation ... ")
-
-## Load ex1data1.txt
-## Column 1: Population of a city
-## Column 2: Profit of a foot truck
-data <- read.table("ex1data1.txt", header = F, sep = ",")
-
-X <- data[, 1]
-y <- data[, 2]
-
-
-## Number of training examples
-m <- length(y)
-
-cat("Done!\n\n")
+pauseAndContinue()
 
 
 
 # Plotting ----------------------------------------------------------------
 
-cat("Plotting data ... ")
+cat("Plotting Data ... \n")
 
+data <- read.table("ex1data1.txt", header = F, sep = ",")
+X <- data[, 1]
+y <- data[, 2]
+
+m <- length(y) # Number of training examples
+
+# Plot Data
+# Note: You have to complete the code in plotData.m
 plotData(X, y)
-
-cat("Done!\n\n")
 
 pauseAndContinue()
 
@@ -59,113 +66,77 @@ pauseAndContinue()
 
 # Gradient descent --------------------------------------------------------
 
-cat("Running gradient descent ...")
+cat("Running Gradient Descent ... \n")
 
+X <- cbind(1, X)  # Add a column of ones to x
+theta <- c(0, 0)  # Initialize fitting parameters
 
-## Stop time
-ptm <- proc.time()
-
-
-## Accommodate theta_zero intercept term
-X <- cbind(1, X) 
-
-
-## Initialize fitting parameters
-theta <- c(0, 0) 
-
-
-## Some gradient descent settings
+# Some gradient descent settings
 iterations <- 1500
-alpha <- 0.01
+#alpha <- 0.01
+alpha <- 0.02
 
-
-## Compute and display initial cost
+# Compute and display initial cost
 J <- computeCost(X, y, theta)
-cat("Initial cost:")
-cat(J)
-cat("\n\n")
 
+# Run gradient descent
+theta <- gradientDescent(X, y, theta, alpha, iterations)$theta
 
-## Run gradient descent
-gradientDescent_call <- gradientDescent(X, y, theta, alpha, iterations)
-
-
-## Get thetas
-theta <- gradientDescent_call$theta
-
+# Print theta to screen
 cat("Theta found by gradient descent: \n")
 cat(theta[1], theta[2], sep = "\n")
-cat("\n\n")
+cat("\n")
 
-
-## Plot the linear fit
+# Plot the linear fit
 lines(X[, 2], X %*% theta, col = "blue")
 legend("bottomright",
-       c("Training data", "Linear Regression"),
+       c("Training data", 
+         "Linear Regression"),
        cex = 0.75,
        pch = c(4, NA),
        lty = c(NA, 1),
        col = c("red", "blue"))
 
-
-## Predict values for population sizes of 35,000 and 70,000
+# Predict values for population sizes of 35,000 and 70,000
 predict1 <- c(1, 35000) %*% theta
 cat("For population = 35,000, we predict a profit of: \n") 
-cat(predict1)
-cat("\n\n")
-
+cat(predict1, "\n")
 predict2 <- c(1, 70000) %*% theta
 cat("For population = 70,000, we predict a profit of: \n") 
-cat(predict2)
-cat("\n\n")
-
-ptm <- round((proc.time()-ptm)[3], 2)
-cat(paste("Elapsed time: ", ptm, " s", sep = ""))
-
-pauseAndContinue()
+cat(predict2, "\n")
 
 
 
-# Visualizing J(theta_0, theta_1) -----------------------------------------
+# Visualising J(theta_0, theta_1) -----------------------------------------
 
-cat("Visualizing J(theta_0, theta_1) ...")
+cat('Visualizing J(theta_0, theta_1) ...\n')
 
-
-## Grid over which we will calculate J
-## Will create example values for thetas
-## e.g. values from - 10 to 10 for theta_1, and -1 to 4 for theta_1
+# Grid over which we will calculate J
 theta0_vals = seq(-10, 10, length.out = 100)
 theta1_vals = seq( -1,  4, length.out = 100)
 
-
-## Initialize J_vals to a matrix of 0's
-## Will create a 100x100 matrix, see length.out of grid above
+# initialize J_vals to a matrix of 0's
 J_vals <- 
   matrix(0,
          ncol = length(theta0_vals),
          nrow = length(theta1_vals))
 
-
-## Fill out J_vals
-## For each theta_0 (i) and each theta_1 (j) 
-## ... compute J (cost function for chosen thetas)
-## ... and save to J_vals matrix
+# Fill out J_vals
 for (i in 1:length(theta0_vals)) {
   for (j in 1:length(theta1_vals)) {
-    t <- c(theta0_vals[i], theta1_vals[j])
+    t <- c(theta0_vals[i], 
+           theta1_vals[j])
     J_vals[i,j] <- computeCost(X, y, t)
   }
 }
 
-
-## Workaround for plot colors similar to matlab
-source("matlabColours.R") 
-
-
 ## Surface plot
+## Workaround for plot colors similar to matlab
+source("etc/matlabColours.R") 
 ## For each example value pair of theta_0 and theta_1 (see above)
 ## ... the corresponding values from cost function are displayed
 require(rgl)
+theta_history <- gdoutput$theta_history
 persp3d(x = theta0_vals,
         y = theta1_vals,
         z = J_vals,
@@ -173,10 +144,7 @@ persp3d(x = theta0_vals,
         xlab = "theta_0",
         ylab = "theta_1")
 
-
-## Contour plot
-## Shows (similar to surface plot) the cost distribution 
-## ... for theta_0 and theta_1 from birds view
+# Contour plot
 dev.new()
 contour(theta0_vals,
         theta1_vals,
@@ -184,80 +152,7 @@ contour(theta0_vals,
         levels = 10^seq(-2, 3, length.out = 20),
         drawlabels = F,
         col =  col_vals_contour)
-
-
-## Add theta history to contour plot
-## Shows the trace of cost for each computed theta
-## ... in each itereation of gradient descent function
-theta_history <- gradientDescent_call$theta_history
-points(theta_history[, 1], 
-       theta_history[, 2], 
-       pch = 4, 
-       col = "orange")
 points(theta[1], 
        theta[2], 
        pch = 4, 
        col = "red")
-
-pauseAndContinue()
-
-
-
-# Additional visualisations -----------------------------------------------
-
-cat("Plots for J_history... ")
-
-
-## Plot J_history for iterations
-## Shows decreasing cost values over all iterations
-## ... until converging to a minimum
-J_history <- gradientDescent_call$J_history
-dev.new()
-plot(J_history,
-     xlab = "Number if terations",
-     ylab = "Cost J",
-     type = "l",
-     main = "Development of cost J in iterations")
-
-
-## Plot J_history for theta_0 and theta_1 over all iterations
-dev.new()
-par(mfrow = c(1, 2))
-
-plot(x = c(1:iterations),
-     y = gradientDescent_call$j_history[, 1],
-     type = "l",
-     xlab = "Number of iterations",
-     ylab = "Cost j for theta 0",
-     col = "green")
-plot(x = c(1:iterations),
-     y = gradientDescent_call$j_history[, 2],
-     type = "l",
-     xlab = "Number if terations",
-     ylab = "Cost j for theta 1",
-     col = "green")
-title("Development of cost j for theta 0 and theta 1", 
-      outer = T,
-      line = -2)
-
-
-## Plot developement of values found theta_0 and theta_0
-dev.new()
-par(mfrow = c(1, 2))
-
-plot(x = c(1:iterations),
-     y = theta_history[, 1],
-     type = "l",
-     xlab = "Number if terations",
-     ylab = "theta 0",
-     col = "green")
-plot(x = c(1:iterations),
-     y = theta_history[, 2],
-     type = "l",
-     xlab = "Number if terations",
-     ylab = "theta 1",
-     col = "green")
-title("Development of theta 0 and theta 1", 
-      outer = T,
-      line = -2)
-

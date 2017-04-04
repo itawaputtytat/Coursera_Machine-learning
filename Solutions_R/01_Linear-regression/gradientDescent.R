@@ -18,7 +18,7 @@ gradientDescent <- function(X, y, theta, alpha, num_iters) {
 
     ## Show progress of iterations up to 100%
     progress <- 100/num_iters * iter
-    setTxtProgressBar(progressBar, progress)
+    setTxtProgressBar(progressBar100, progress)
 
     
     ## Cost for theta 0:
