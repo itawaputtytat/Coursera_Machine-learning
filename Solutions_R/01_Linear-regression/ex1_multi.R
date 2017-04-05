@@ -1,16 +1,16 @@
 
 # Preparatory settings ----------------------------------------------------
 
-wdReset()
-
-
-## Set new working directory
-dir_ex  <- "01_Linear regression"
-setwd(file.path(getwd(), dir_ex))
+# wdReset()
+# 
+# 
+# ## Set new working directory
+# dir_ex  <- "01_Linear regression"
+# setwd(file.path(getwd(), dir_ex))
 
 
 ## Should surface plots be created?
-plotSurfacePlots <- F
+plotSurfacePlots <- T
 
 
 ## Call functions
@@ -310,6 +310,13 @@ if (plotSurfacePlots == T) {
           color = col_vals_surface,
           xlab = "theta_0",
           ylab = "theta_1")
+  points3d(gradientDescent_call$theta_history[, 1], 
+           gradientDescent_call$theta_history[, 2], 
+           J_history + 10, 
+           col="red",size=3.5)
+  lines3d(gradientDescent_call$theta_history[, 1],
+          gradientDescent_call$theta_history[, 2], 
+          J_history+10, col="red")
   
   pauseAndContinue()
   
@@ -327,6 +334,13 @@ if (plotSurfacePlots == T) {
           color = col_vals_surface,
           xlab = "theta_0",
           ylab = "theta_2")
+  points3d(gradientDescent_call$theta_history[, 1], 
+           gradientDescent_call$theta_history[, 3], 
+           J_history + 10, 
+           col="red",size=3.5)
+  lines3d(gradientDescent_call$theta_history[, 1],
+          gradientDescent_call$theta_history[, 3], 
+          J_history+10, col="red")
   
   pauseAndContinue()
   
@@ -344,6 +358,13 @@ if (plotSurfacePlots == T) {
           color = col_vals_surface,
           xlab = "theta_1",
           ylab = "theta_2")
+  points3d(gradientDescent_call$theta_history[, 2], 
+           gradientDescent_call$theta_history[, 3], 
+           J_history + 10, 
+           col="red",size=3.5)
+  lines3d(gradientDescent_call$theta_history[, 2],
+          gradientDescent_call$theta_history[, 3], 
+          J_history+10, col="red")
   
 
   pauseAndContinue() 

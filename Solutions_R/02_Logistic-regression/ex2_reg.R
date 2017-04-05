@@ -1,10 +1,10 @@
 # Preparatory settings ----------------------------------------------------
 
-wdReset()
+#wdReset()
 
 ## Set new working directory
-dir_ex  <- "02_Logistic regression"
-setwd(file.path(getwd(), dir_ex))
+#dir_ex  <- "02_Logistic regression"
+#setwd(file.path(getwd(), dir_ex))
 
 ## Call functions
 source("plotData.R")
